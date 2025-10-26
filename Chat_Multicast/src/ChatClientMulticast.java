@@ -29,7 +29,7 @@ import javax.swing.border.EmptyBorder;
 public class ChatClientMulticast extends JFrame {
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 1235;
-    private static final String MULTICAST_ADDRESS = "230.0.0.1";
+    private static final String MULTICAST_ADDRESS = "230.0.0.1";	
     private static final int MULTICAST_PORT = 4446;
 
     private JPanel messagePanel;
