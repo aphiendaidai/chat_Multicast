@@ -25,7 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-
+import java.net.NetworkInterface;
 public class ChatClientMulticast extends JFrame {
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 1235;
@@ -268,6 +268,10 @@ public class ChatClientMulticast extends JFrame {
         new Thread(() -> {
             try (MulticastSocket multicastSocket = new MulticastSocket(MULTICAST_PORT)){
                 InetAddress multicastGroup = InetAddress.getByName(MULTICAST_ADDRESS);
+                NetworkInterface loopbackInterface = NetworkInterface.getByInetAddress(InetAddress.getLoopbackAddress());
+            if (loopbackInterface != null) {
+                clientMulticastSocket.setNetworkInterface(loopbackInterface);
+            }
                 multicastSocket.joinGroup(multicastGroup);
                 byte[] buffer = new byte[4096];
                 while (true) {
@@ -293,3 +297,4 @@ public class ChatClientMulticast extends JFrame {
         SwingUtilities.invokeLater(ChatClientMulticast::new);
     }
 }
+
