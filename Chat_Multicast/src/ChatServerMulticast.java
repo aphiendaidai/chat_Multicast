@@ -59,18 +59,25 @@ public class ChatServerMulticast {
         }
     }
     
+
     public static void sendToGroup(String groupName, String message, ClientHandler sender) {
         Set<String> members = groups.get(groupName);
         if (members != null) {
+            // Định dạng tin nhắn có đầy đủ thông tin IP và tên người gửi
             String formattedMsg = String.format("[Group: %s from %s (%s)] %s",
                     groupName, sender.getClientIpAddress(), sender.getClientName(), message);
+            
             for (String memberName : members) {
                 ClientHandler client = clients.get(memberName);
+                
+                // ĐIỀU KIỆN GÂY LỖI "!memberName.equals(sender)" ĐÃ BỊ XÓA
+                // Giờ đây server sẽ gửi tin nhắn cho TẤT CẢ thành viên, bao gồm cả người gửi.
                 if (client != null) {
-                    client.sendMessage(formattedMsg);
+                    client.sendMessage(formattedMsg); // Gửi qua TCP đến từng người
                 }
             }
         } else {
+            // Thêm thông báo lỗi nếu nhóm không tồn tại
             sender.sendMessage("[System] Group '" + groupName + "' not found.");
         }
     }
