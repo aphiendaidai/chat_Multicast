@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.net.NetworkInterface;
 
 public class ChatServerMulticast {
     private static final int TCP_PORT = 1235;
@@ -26,9 +27,14 @@ public class ChatServerMulticast {
         try {
             multicastSocket = new MulticastSocket(MULTICAST_PORT);
             multicastGroup = InetAddress.getByName(MULTICAST_ADDRESS);
+                   NetworkInterface loopbackInterface = NetworkInterface.getByInetAddress(InetAddress.getLoopbackAddress());
+        if (loopbackInterface != null) {
+            multicastSocket.setNetworkInterface(loopbackInterface);
+        }
             multicastSocket.joinGroup(multicastGroup);
             System.out.println("Multicast group joined: " + MULTICAST_ADDRESS + ":" + MULTICAST_PORT);
-
+      
+     
             groups.put("General", new HashSet<>());
 
             try (ServerSocket serverSocket = new ServerSocket(TCP_PORT)) {
@@ -320,3 +326,4 @@ class ClientHandler implements Runnable {
         }
     }
 }
+
